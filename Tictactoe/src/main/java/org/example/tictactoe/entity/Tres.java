@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "resultados")
-public class Resultado {
+@Table(name = "juegotres")
+public class Tres {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idResultado;
+    private Long idTres;
 
     @Column(name = "nombre_partida", nullable = false, length = 30)
     private String nombrePartida;

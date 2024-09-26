@@ -1,7 +1,7 @@
 package org.example.tictactoe.service;
 
-import org.example.tictactoe.entity.Resultado;
-import org.example.tictactoe.repository.ResultadoRepository;
+import org.example.tictactoe.entity.Tres;
+import org.example.tictactoe.repository.TresRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,27 +9,27 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ResultadoService {
+public class TresService {
 
     @Autowired
-    private ResultadoRepository resultadoRepository;
+    private TresRepository resultadoRepository;
 
-    public List<Resultado> listarResultados() {
+    public List<Tres> listarResultados() {
         return resultadoRepository.findAll();
     }
 
-    public Optional<Resultado> obtenerResultadoPorId(Long id) {
+    public Optional<Tres> obtenerResultadoPorId(Long id) {
         return resultadoRepository.findById(id);
     }
 
-    public Resultado guardarResultado(Resultado resultado) {
+    public Tres guardarResultado(Tres resultado) {
         return resultadoRepository.save(resultado);
     }
 
-    public Resultado actualizarResultado(Long id, Resultado resultadoActualizado) throws Exception {
-        Optional<Resultado> optionalResultado = resultadoRepository.findById(id);
+    public Tres actualizarResultado(Long id, Tres resultadoActualizado) throws Exception {
+        Optional<Tres> optionalResultado = resultadoRepository.findById(id);
         if (optionalResultado.isPresent()) {
-            Resultado resultadoExistente = optionalResultado.get();
+            Tres resultadoExistente = optionalResultado.get();
             resultadoExistente.setNombrePartida(resultadoActualizado.getNombrePartida());
             resultadoExistente.setNombreJugador1(resultadoActualizado.getNombreJugador1());
             resultadoExistente.setNombreJugador2(resultadoActualizado.getNombreJugador2());

@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.game.api.RetrofitClient
-import com.example.game.model.Resultado
+import com.example.game.model.Tres
 import com.example.game.ui.theme.GameTheme
 import retrofit2.Call
 
@@ -72,7 +71,7 @@ fun TicTacToeScreen() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("3 en Raya", style = MaterialTheme.typography.headlineMedium)
+        Text("JUEGO 3 EN RAYA", style = MaterialTheme.typography.headlineMedium)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -97,36 +96,57 @@ fun TicTacToeScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botones "Iniciar" y "Anular"
+        // Botones "Iniciar", "Anular" y "Iniciar Nuevo Juego"
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Button(
-                onClick = {
-                    if (player1Name.isNotEmpty() && player2Name.isNotEmpty()) {
-                        crearPartida("Partida 1", player1Name, player2Name) { id ->
-                            partidaId = id // Guardamos el ID de la partida creada
-                            isGameStarted = true // Solo se permite jugar después de iniciar
+            // Botón "Iniciar" (solo si el juego no ha comenzado)
+            if (!isGameStarted) {
+                Button(
+                    onClick = {
+                        if (player1Name.isNotEmpty() && player2Name.isNotEmpty()) {
+                            crearPartida("Partida 1", player1Name, player2Name) { id ->
+                                partidaId = id // Guardamos el ID de la partida creada
+                                isGameStarted = true // Solo se permite jugar después de iniciar
+                            }
                         }
-                    }
-                },
-                enabled = !isGameStarted
-            ) {
-                Text("Iniciar")
+                    },
+                    enabled = !isGameStarted
+                ) {
+                    Text("Iniciar")
+                }
             }
 
-            Button(
-                onClick = {
-                    isGameStarted = false
-                    board = List(9) { "_" } // Reinicia el tablero
-                    winner = null
-                    partidaId = null // Restablecemos el ID de la partida
+            // Botón "Anular" (si el juego está en progreso)
+            if (isGameStarted && winner == null) {
+                Button(
+                    onClick = {
+                        isGameStarted = false
+                        board = List(9) { "_" } // Reinicia el tablero
+                        winner = null // Reiniciar ganador
+                        partidaId = null // Restablecemos el ID de la partida
+                    }
+                ) {
+                    Text("Anular")
                 }
-            ) {
-                Text("Anular")
+            }
+
+            // Botón "Iniciar Nuevo Juego" (aparece cuando hay un ganador o empate)
+            if (winner != null) {
+                Button(
+                    onClick = {
+                        isGameStarted = false
+                        board = List(9) { "_" } // Reinicia el tablero
+                        winner = null // Reiniciar ganador
+                        partidaId = null // Restablecemos el ID de la partida
+                    }
+                ) {
+                    Text("Iniciar Nuevo Juego")
+                }
             }
         }
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -142,8 +162,8 @@ fun TicTacToeScreen() {
                         modifier = Modifier
                             .size(100.dp)
                             .background(MaterialTheme.colorScheme.primary)
-                            .clickable(enabled = isGameStarted && board[index] == "_") {
-                                if (isGameStarted && board[index] == "_") {
+                            .clickable(enabled = isGameStarted && board[index] == "_" && winner == null) {
+                                if (isGameStarted && board[index] == "_" && winner == null) {
                                     board = board.toMutableList().apply {
                                         set(index, currentPlayer)
                                     }
@@ -154,7 +174,8 @@ fun TicTacToeScreen() {
                                         actualizarResultado(partidaId!!, winner!!, puntos, "Finalizado")
                                     }
                                 }
-                            },
+                            }
+                        ,
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -170,9 +191,19 @@ fun TicTacToeScreen() {
 
         // Indicador de turno o ganador
         if (winner != null) {
-            Text("Ganador: $winner", style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = "Juego terminado. Ganador: " + when (winner) {
+                    "X" -> player1Name
+                    "O" -> player2Name
+                    else -> "Empate"
+                },
+                style = MaterialTheme.typography.headlineSmall
+            )
         } else {
-            Text("Turno de $currentPlayer", style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = "Turno de " + if (currentPlayer == "X") player1Name else player2Name,
+                style = MaterialTheme.typography.headlineSmall
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -253,7 +284,7 @@ fun verificarGanador(board: List<String>): String? {
 }
 
 fun crearPartida(nombrePartida: String, jugador1: String, jugador2: String, onSuccess: (Long) -> Unit) {
-    val nuevaPartida = Resultado(
+    val nuevaPartida = Tres(
         nombrePartida = nombrePartida,
         nombreJugador1 = jugador1,
         nombreJugador2 = jugador2,
@@ -264,10 +295,10 @@ fun crearPartida(nombrePartida: String, jugador1: String, jugador2: String, onSu
 
     // Llamada al backend para crear la partida
     RetrofitClient.instance.crearPartida(nuevaPartida)
-        .enqueue(object : retrofit2.Callback<Resultado> {
-            override fun onResponse(call: Call<Resultado>, response: retrofit2.Response<Resultado>) {
+        .enqueue(object : retrofit2.Callback<Tres> {
+            override fun onResponse(call: Call<Tres>, response: retrofit2.Response<Tres>) {
                 if (response.isSuccessful) {
-                    response.body()?.idResultado?.let { id ->
+                    response.body()?.idTres?.let { id ->
                         onSuccess(id)  // Devuelve el ID de la partida creada
                     }
                 } else {
@@ -275,15 +306,15 @@ fun crearPartida(nombrePartida: String, jugador1: String, jugador2: String, onSu
                 }
             }
 
-            override fun onFailure(call: Call<Resultado>, t: Throwable) {
+            override fun onFailure(call: Call<Tres>, t: Throwable) {
                 Log.e("Retrofit", "Fallo en la conexión: ${t.message}")
             }
         })
 }
 
 fun actualizarResultado(idPartida: Long, ganador: String, puntos: Int, estado: String) {
-    val resultadoActualizado = Resultado(
-        idResultado = idPartida,
+    val resultadoActualizado = Tres(
+        idTres = idPartida,
         nombrePartida = "Partida actual",  // Puedes cambiar este valor según corresponda
         nombreJugador1 = "Jugador 1",      // Pasa el nombre real del jugador 1
         nombreJugador2 = "Jugador 2",      // Pasa el nombre real del jugador 2
@@ -294,8 +325,8 @@ fun actualizarResultado(idPartida: Long, ganador: String, puntos: Int, estado: S
 
     // Llamada al backend para actualizar el resultado
     RetrofitClient.instance.actualizarResultado(idPartida, resultadoActualizado)
-        .enqueue(object : retrofit2.Callback<Resultado> {
-            override fun onResponse(call: Call<Resultado>, response: retrofit2.Response<Resultado>) {
+        .enqueue(object : retrofit2.Callback<Tres> {
+            override fun onResponse(call: Call<Tres>, response: retrofit2.Response<Tres>) {
                 if (response.isSuccessful) {
                     Log.d("Retrofit", "Resultado actualizado correctamente")
                 } else {
@@ -303,7 +334,7 @@ fun actualizarResultado(idPartida: Long, ganador: String, puntos: Int, estado: S
                 }
             }
 
-            override fun onFailure(call: Call<Resultado>, t: Throwable) {
+            override fun onFailure(call: Call<Tres>, t: Throwable) {
                 Log.e("Retrofit", "Fallo en la conexión: ${t.message}")
             }
         })
