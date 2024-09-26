@@ -28,25 +28,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF1E88E5), // Azul oscuro para el tema principal
-    secondary = Color(0xFFD32F2F), // Rojo vibrante para la "X"
-    background = Color(0xFF1976D2), // Fondo más claro para el tablero
-    surface = Color.White, // Blanco para las superficies
-    onPrimary = Color.White, // Color del texto sobre el botón principal
-    onSecondary = Color.White, // Texto en botones secundarios y "X"
-    onBackground = Color.Black, // Texto sobre fondo
-    onSurface = Color.Black // Texto en superficies claras
+    primary = Color(0xFF1E88E5),
+    secondary = Color(0xFFD32F2F),
+    background = Color(0xFF1976D2),
+    surface = Color.White,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onBackground = Color.Black,
+    onSurface = Color.Black
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF1E88E5), // Azul oscuro para el fondo del tablero
-    secondary = Color(0xFFD32F2F), // Rojo vibrante para la "X"
-    background = Color(0xFF1976D2), // Azul para el fondo
-    surface = Color.White, // Blanco para las superficies
-    onPrimary = Color.White, // Texto blanco sobre botones azules
-    onSecondary = Color.White, // Texto sobre la "X"
-    onBackground = Color.Black, // Texto sobre fondo
-    onSurface = Color.Black // Texto sobre superficies
+    primary = Color(0xFF1E88E5),
+    secondary = Color(0xFFD32F2F),
+    background = Color(0xFF1976D2),
+    surface = Color.White,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onBackground = Color.Black,
+    onSurface = Color.Black
 )
 
 @Composable

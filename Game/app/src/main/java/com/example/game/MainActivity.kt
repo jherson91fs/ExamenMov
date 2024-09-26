@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TicTacToeScreen() // Llamamos a la pantalla principal del juego
+                    TicTacToeScreen()
                 }
             }
         }
