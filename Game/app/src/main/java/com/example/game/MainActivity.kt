@@ -171,8 +171,14 @@ fun TicTacToeScreen() {
                                     winner = verificarGanador(board)
                                     if (winner != null) {
                                         val puntos = if (winner == "Empate") 5 else 10
-                                        actualizarResultado(partidaId!!, winner!!, puntos, "Finalizado")
+                                        val ganadorNombre = when (winner) {
+                                            "X" -> player1Name  // Si "X" gana, jala el nombre del Jugador 1
+                                            "O" -> player2Name  // Si "O" gana, jala el nombre del Jugador 2
+                                            else -> "Empate"    // Si es empate
+                                        }
+                                        actualizarResultado(partidaId!!, player1Name, player2Name, ganadorNombre, puntos, "Finalizado")
                                     }
+
                                 }
                             }
                         ,
@@ -193,13 +199,14 @@ fun TicTacToeScreen() {
         if (winner != null) {
             Text(
                 text = "Juego terminado. Ganador: " + when (winner) {
-                    "X" -> player1Name
-                    "O" -> player2Name
+                    "X" -> player1Name  // Muestra el nombre del Jugador 1 si gana "X"
+                    "O" -> player2Name  // Muestra el nombre del Jugador 2 si gana "O"
                     else -> "Empate"
                 },
                 style = MaterialTheme.typography.headlineSmall
             )
-        } else {
+        }
+        else {
             Text(
                 text = "Turno de " + if (currentPlayer == "X") player1Name else player2Name,
                 style = MaterialTheme.typography.headlineSmall
@@ -312,15 +319,15 @@ fun crearPartida(nombrePartida: String, jugador1: String, jugador2: String, onSu
         })
 }
 
-fun actualizarResultado(idPartida: Long, ganador: String, puntos: Int, estado: String) {
+fun actualizarResultado(idPartida: Long, player1Name: String, player2Name: String, ganador: String, puntos: Int, estado: String) {
     val resultadoActualizado = Tres(
         idTres = idPartida,
         nombrePartida = "Partida actual",  // Puedes cambiar este valor según corresponda
-        nombreJugador1 = "Jugador 1",      // Pasa el nombre real del jugador 1
-        nombreJugador2 = "Jugador 2",      // Pasa el nombre real del jugador 2
-        ganador = ganador,
+        nombreJugador1 = player1Name,      // Pasa el nombre real del jugador 1
+        nombreJugador2 = player2Name,      // Pasa el nombre real del jugador 2
+        ganador = ganador,                 // Pasa el nombre del ganador (o "Empate")
         punto = puntos,
-        estado = estado
+        estado = estado                    // Actualiza el estado (debería ser "Finalizado")
     )
 
     // Llamada al backend para actualizar el resultado
@@ -339,5 +346,8 @@ fun actualizarResultado(idPartida: Long, ganador: String, puntos: Int, estado: S
             }
         })
 }
+
+
+
 
 

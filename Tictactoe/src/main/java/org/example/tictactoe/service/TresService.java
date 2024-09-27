@@ -35,12 +35,15 @@ public class TresService {
             resultadoExistente.setNombreJugador2(resultadoActualizado.getNombreJugador2());
             resultadoExistente.setGanador(resultadoActualizado.getGanador());
             resultadoExistente.setPunto(resultadoActualizado.getPunto());
-            resultadoExistente.setEstado(resultadoActualizado.getEstado());
-            return resultadoRepository.save(resultadoExistente);
+            resultadoExistente.setEstado(resultadoActualizado.getEstado());  // Asegúrate de que se actualice el estado
+            return resultadoRepository.save(resultadoExistente);             // Guarda el resultado
         } else {
             throw new Exception("Resultado no encontrado");
         }
     }
+
+
+
 
     public void eliminarResultado(Long id) {
         resultadoRepository.deleteById(id);
